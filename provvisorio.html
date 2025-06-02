@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <input type="number" id="dec" style="width: 250px;">
+    <button type="button" id="but"
+        onclick="document.getElementById('bin').value = convertDecimal(document.getElementById('dec').value)"
+        >->
+    </button>
+    <input type="text" id="bin" style="width: 250px;">
+    <button type="button" id="but"
+        onclick="document.getElementById('bin').value = (document.getElementById('dec').value >>> 0).toString(2)"
+        >->
+    </button>
+    
+    <script>
+       
+        function convertDecimal(decimal) {
+            return (decimal >>> 0).toString(2);
+        }
+        
+    </script>
+</body>
+</html>

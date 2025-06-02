@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<body>
+ 
+<h2>Converter</h2>
+ 
+<div>
+    <p>Int 32</p>
+    <span id="min"></span>
+    <span><b> --- </b></span>
+    <span id="max" style="font-weight: bold;"></span>
+</div>
+<div id="sheet">
+   <input type="checkbox">
+</div>
+ 
+<div>
+    <br>
+    <span>Scrivi un numero decimale (non converte in int32):</span>
+    <input type="number" id="prova">
+    <button type="button"
+        onclick="document.getElementById('demo').innerHTML = Number(document.getElementById('prova').value).toString(2)"
+        >>>
+    </button>
+    <span id="demo"></span>
+</div>
+<div>
+    <br>
+    <span>Scrivi un numero decimale (converte in int32):</span>
+    <input type="number" id="dec" style="width: 250px;">
+    <button type="button" id="but"
+        onclick="document.getElementById('bin').value = (document.getElementById('dec').value >>> 0).toString(2)"
+        >->
+    </button>
+    <input type="text" id="bin" style="width: 250px;">
+</div>
+    <br>
+ 
+<script>
+    function calcoloMax() {
+        return 2 ** 31 -1;
+    }
+    document.getElementById('max').innerHTML = calcoloMax();
+   
+ 
+    function calcoloMin() {
+        return -(2 ** 31);
+    }
+    document.getElementById('min').innerHTML = calcoloMin();
+    document.getElementById('min').style.fontWeight = "bold";
+ 
+    function calcoloPot(n) {
+        return 2 ** n;
+    }
+ 
+    function populateSheet() {
+        let sign = document.createElement('p');
+        sign.id = "signp";
+        sign.innerHTML = "Se è checked il numero è negativo";
+        let signInputT = document.createElement('input');
+        signInputT.id = "signinputt";
+        signInputT.type = "text";
+        signInputT.value = "+/-";
+        signInputT.readOnly = true;
+        let signInputR = document.createElement('input');
+        signInputR.id = "signinputr";
+        signInputR.type = "checkbox";
+        document.getElementById('sheet').append(sign);
+        sign.append(signInputT);
+        sign.append(signInputR);
+        //possibile che dovrei fare = calculateNumber; ?
+        //e forse dovrei metterle come onchange?
+        document.getElementById(signInputR.id).onclick = function() {calculateNumber(signInputR)};
+        document.getElementById(signInputR.id).addEventListener("click", function() {populateBinary(signInputR)} );
+        for (let i = 30; i >= 0; i--) {
+            let p = document.createElement("p");
+            p.id = "pot"+i;
+            let inputN = document.createElement('input');
+            inputN.id = "inpN"+i;
+            inputN.type = "number";
+            inputN.value = calcoloPot(i);
+            inputN.style.textAlign = "right";
+            inputN.readOnly = true;
+            let inputR = document.createElement('input');
+            inputR.id = "inpR"+i;
+            inputR.type = "checkbox";
+           
+            p.innerHTML = "2^"+i;
+            document.getElementById('sheet').append(p);
+            p.append(inputN);
+            p.append(inputR);  
+            document.getElementById(inputR.id).onclick = function() {calculateNumber(inputR)};
+            document.getElementById(inputR.id).addEventListener("click", function() {populateBinary(inputR)} );        
+        }
+       
+        let bin = document.createElement('span');
+        bin.id = "binarycode";
+        bin.innerText = "Numero in codice binario";
+        document.getElementById('sheet').append(bin);
+        let binText = document.createElement('input');
+        binText.id = "bintext";
+        binText.type = "value";
+        binText.value = "00000000000000000000000000000000";
+        binText.readOnly = true;
+        binText.style.width = "250px";
+        bin.append(binText);
+       
+        let dec = document.createElement("span");
+        dec.id = "decimalnumber";
+        dec.innerHTML = "Numero decimale";
+        document.getElementById('sheet').append(dec);
+        let decText = document.createElement('input');
+        decText.id = "dectext";
+        decText.type = "value";
+        decText.value = "0";
+        decText.style.width = "250px";
+        decText.style.textAlign = "right";
+        decText.readOnly = true;
+        dec.append(decText);
+ 
+    }
+    populateSheet();
+   
+    function populateBinary(element) {
+        let binary = document.getElementById("bintext").value;
+        let checkbox = document.getElementById(element.id).id;
+        if (checkbox == "signinputr") {
+            if (binary[0] == "0") {
+                binary = "1" + binary.slice(1);
+                document.getElementById("bintext").value = binary;
+            } else if (binary[0] == "1") {
+                binary = "0" + binary.slice(1);
+                document.getElementById("bintext").value = binary;
+            } else {
+                alert("Non so che cazzo hai fatto, refresha la pagina, stronzo!");
+            }            
+        } else {
+            for (let j = 30; j >= 0; j--) {
+                if (checkbox == "inpR"+j) {
+                    if (binary[31-j] == "0") {
+                        binary = binary.slice(0, 31-j)+ "1" + binary.slice(31-j+1);
+                        document.getElementById("bintext").value = binary;
+                    } else if (binary[31-j] == "1") {
+                        binary = binary.slice(0, 31-j)+ "0" + binary.slice(31-j+1);
+                        document.getElementById("bintext").value = binary;
+                    } else {
+                        alert("Non so che cazzo hai fatto, refresha la pagina, stronzo!");
+                    }
+                }
+            }
+        }      
+       
+    }
+ 
+ 
+    function calculateNumber(element) {
+        let decimalStr = document.getElementById("dectext").value;
+        let checkbox = document.getElementById(element.id).id;
+        let decimal = Number(decimalStr);
+       
+        if (checkbox == "signinputr") {
+            if (document.getElementById(checkbox).checked) {
+                decimal = decimal - 2**31;
+                document.getElementById("dectext").value = decimal;
+            } else {
+                decimal = decimal + 2**31;
+                document.getElementById("dectext").value = decimal;
+            }
+        } else {
+            for (let j = 30; j >= 0; j--) {
+                if (checkbox.slice(4) == j) {
+                    if (document.getElementById("inpR"+j).checked) {
+                        decimal = decimal+Number(document.getElementById("inpN"+j).value);
+                        document.getElementById("dectext").value = decimal;
+                    } else {                        
+                        decimal = decimal-Number(document.getElementById("inpN"+j).value);
+                        document.getElementById("dectext").value = decimal;
+                    }                    
+                }
+            }
+        }
+       
+    }
+</script>
+</body>
+ 
+</html>

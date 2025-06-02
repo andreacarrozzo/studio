@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: black;
+            color: aliceblue;
+        }
+    </style>
+</head>
+<body id ="body">
+    <h1>Ricorda sempre. Il for in è per gli oggetti. Il for of è per gli array</h1>
+   
+    <div id="lorem" style="padding: 1%;" title="2 lorem boldened e un br"></div>
+   
+    <div id="regexpdiv" style="padding: 1%;" ></div>
+    <div style="padding: 1%;">result
+        <div id="result" style="padding: 1%;" onmouseenter="createToolTip(id)" onmouseleave="removeToolTip(id)"></div>
+    </div>
+    <div style="padding: 1%;">result1
+        <div id="result1" style="padding: 1%;" onmouseenter="createToolTip(id)" onmouseleave="removeToolTip(id)"></div>
+    </div>
+    <div style="padding: 1%;">result2
+        <div id="result2" style="padding: 1%;" onmouseenter="createToolTip(id)" onmouseleave="removeToolTip(id)"></div>
+    </div>
+    <div style="padding: 1%;">result3
+        <div id="result3" style="padding: 1%;" onmouseenter="createToolTip(id)" onmouseleave="removeToolTip(id)"></div>
+    </div>
+    <div style="padding: 1%;">result4
+        <div id="result4" style="padding: 1%;" onmouseenter="createToolTip(id)" onmouseleave="removeToolTip(id)"></div>
+    </div>
+    <div style="padding: 1%;">prove
+        <div id="prove" style="padding: 1%;" onmouseenter="createToolTip(id)" onmouseleave="removeToolTip(id)"></div>
+    </div>
+    <script>
+        let frase = new Map([
+            ["result", "matchAll() for of"],
+            ["result1", "matchAll() toArray - foreach"],
+            ["result2", "matchAll() toArray - for normale"],
+            ["result3", "matchAll() toArray - for of"],
+            ["result4", "matchAll() for in"],
+            ["prove", "matchAll() for each --- matchAll() for normale"]
+        ]);
+        console.log(frase);
+ 
+        function createToolTip(id) {
+            //da vedere se si può fare con js senza barare con chat
+            let input = document.getElementById(id);
+            let tooltip = document.createElement('div');
+            tooltip.id = id+'tooltip';
+            tooltip.innerHTML = frase.get(id);
+            tooltip.style.position = 'absolute';
+            tooltip.style.backgroundColor = '#333';
+            tooltip.style.color = '#fff';
+            tooltip.style.padding = '5px';
+            tooltip.style.borderRadius = '5px';
+            tooltip.style.top = (input.offsetTop - 15) + 'px';
+            tooltip.style.left = (input.offsetLeft +30) + 'px';
+            input.appendChild(tooltip);
+        }
+        function removeToolTip(id) {
+            let tooltip = document.getElementById(id+'tooltip');
+            if (tooltip) {
+                tooltip.remove();
+            }
+        }
+ 
+        let lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+       
+        let notLorem = "Frase di prova";
+ 
+        //prova test -> booleano
+        let test = /lo/i.test(lorem);
+        console.log("test = "); console.log(test);
+        //prova search -> indice
+        let testSearch = lorem.search(/lo/i);
+        console.log("testSearch = "); console.log(testSearch);
+       
+        document.getElementById("lorem").innerHTML = "<b>"+lorem+"<br>"+lorem+"</b>";
+        let buttonText = document.createElement("input");
+        buttonText.id = "buttonText";
+        buttonText.type = "button";
+        buttonText.value = "CHAAANGE NOOOOOW!";
+        buttonText.onclick = ()=>{
+            console.log(text);
+            if (text != notLorem) {
+                text = notLorem;
+                console.log(text);
+            } else {
+                text = "<b>"+lorem+"<br>"+lorem+"</b>";
+            }
+            document.getElementById("lorem").innerHTML = text;
+            ricalcolo();
+        };
+        document.body.insertBefore(buttonText, document.getElementById("regexpdiv"));
+        let text = document.getElementById("lorem").innerHTML;
+ 
+        //creazione regexp attraverso parametri
+        let pattern = 'lo';
+        let modifiers ='gi';
+        let regexp = new RegExp(pattern, modifiers);
+ 
+        document.getElementById("regexpdiv").innerHTML = "regexp = ";
+        let input = document.createElement("input");
+        input.id = "regexp";
+        input.value = regexp;
+        document.getElementById("regexpdiv").appendChild(input);
+        let button = document.createElement("input");
+        button.type = "button";
+        button.value = "SEARCH";
+        button.onclick = () => {ricalcolo()};
+        document.getElementById("regexpdiv").appendChild(button);
+       
+        function ricalcolo() {
+            let newRegexpStr = document.getElementById("regexp").value;
+            let newRegexpArr = newRegexpStr.split("/");
+            let newPattern = newRegexpArr[1];
+            let newModifiers = newRegexpArr[2];
+            console.log(newRegexpStr);
+            console.log(newRegexpArr);
+            console.log(newPattern);
+            console.log(newModifiers);
+            let newRegexp = new RegExp(newPattern, newModifiers);
+            console.log(newRegexp);
+            text.matchAll(newRegexp).forEach((value) => {console.log(value)});
+           
+            forOf(newRegexp);
+            functionForEach(newRegexp);
+            forNormale(newRegexp);
+            toArrayForEach(newRegexp);
+            toArrayForNormale(newRegexp);
+            toArrayForOf(newRegexp);
+            toArrayForIn(newRegexp);
+        };
+ 
+        //ogni volta che viene chiamato test viene rimosso un valore dalla regexp
+        let a = regexp.test(text);
+        console.log("prove .test() (periodico di 11)");
+        console.log(a);
+        console.log(regexp.test(text));
+        for (let j = 0; j<9; j++) {
+            console.log(regexp.test(text));
+        }
+        //SE VA OLTRE IL MASSIMO DA' UN FALSE E POI RIPARTE DAL PRIMO! MACHECCAZZ!
+        for (let k = 0; k<22; k++) {
+            console.log(regexp.test(text));
+        }
+        //col search no
+        console.log(".search");
+        console.log(text.search(regexp));
+        //
+ 
+        //prova match -> sembrerebbe un array normale
+        console.log("MATCH");
+        let match = text.match(regexp);
+        console.log(match);
+        //stampa i valori
+        console.log("for of");
+        for (val of match) {
+            console.log(val);
+        }
+        //stampa gli indici?
+        console.log("for in");
+        for (val in match) {
+            console.log(val);
+            //stampa i valori
+            console.log(match[val]);
+        }
+        //stampa i valori
+        console.log("for normale");
+        for (let n = 0; n<match.length; n++) {
+            console.log(match[n]);
+        }
+        //stampa i valori
+        console.log("for each");
+        console.log("forEach(value)");
+        match.forEach((value) => {console.log(value)});
+        console.log("forEach(,index)");
+        match.forEach((o,index) => {console.log(index)});
+        console.log("forEach(,,array)");
+        match.forEach((o, oo, array) => {console.log(array)});
+ 
+        //prova matchall -> ritorna oggetto di array
+        //è un oggetto strano. credo sia perchè è un iterabile
+        // (metodo principale = .next())
+        // (hanno due proprietà: .value e .done)
+        // all'interno di ogni value c'è ogni singolo array
+        console.log("MATCHALL");        
+        let result0 = text.matchAll(regexp);
+        console.log(result0);
+        //0
+        console.log(result0.next());
+        //1
+        console.log(result0.next().done);
+        //2
+        console.log(result0.next().value);
+        //3
+        let b4 = result0.next();
+        b4.done = true;
+        console.log(b4);
+        //4
+        console.log(result0.next().value.index);
+        //5
+        console.log(result0.next().value[0]);
+        //6
+        console.log(result0.next().value['index']);
+        //7
+        console.log(result0.next());
+        //8
+        console.log(result0.next());
+        //9
+        console.log(result0.next());
+        //10 sono fuori -> value: undefined, done: true
+        console.log(result0.next());
+ 
+        //for of
+        let result = text.matchAll(regexp);
+        console.log("RESULT "+result);
+        console.log(result);
+        console.log("for of"); console.log("è stampato nel primo div");
+        let resultTot = "";      
+        //il for in non funziona (funziona ma è follia)
+        for (let item of result) {
+            console.log(item);
+            resultTot += item +" "+ item.index+ "<br>";          
+        }
+        document.getElementById("result").innerHTML = resultTot;
+       
+        function forOf(newRegexp) {
+            let newResult = text.matchAll(newRegexp);
+            let newResultTot = "";
+            for (let item of newResult) {
+                newResultTot += item +" "+ item.index+ "<br>";          
+            }
+            if (newResultTot == "") {
+                newResultTot = "-1";
+            }
+            document.getElementById("result").innerHTML = newResultTot;
+        }
+ 
+        //for each
+        console.log("for each");
+        let result01 = text.matchAll(regexp);
+        result01.forEach((element01) => {
+            console.log(element01);
+            let provaP = document.createElement('p');
+            provaP.innerHTML = element01+ " "+element01.index;
+            document.getElementById("prove").appendChild(provaP);
+            console.log(provaP);
+        });
+ 
+        function functionForEach(newRegexp) {
+            document.getElementById("prove").replaceChildren();
+            let result01 = text.matchAll(newRegexp);
+            result01.forEach((element01) => {
+                let provaP = document.createElement('p');
+                provaP.innerHTML = element01+ " "+element01.index;
+                document.getElementById("prove").appendChild(provaP);
+            });
+ 
+        }
+ 
+        //for normale (le variabili di appoggio sono necessarie. anche la length!)
+        console.log("for normale");
+        let result02 = text.matchAll(regexp);
+        let appoggio = text.matchAll(regexp);
+        let result02Length = appoggio.toArray().length;
+        for (let m = 0; m < result02Length; m++) {
+            //console.log(result02.next().value);
+            let provaSpan = document.createElement('span');
+            let appoj = result02.next();
+            provaSpan.innerHTML = appoj.value +" "+ appoj.value.index +" ";
+            document.getElementById("prove").appendChild(provaSpan);
+            console.log(provaSpan);
+        }
+ 
+        function forNormale(newRegexp) {
+            let result02 = text.matchAll(newRegexp);
+            let appoggio = text.matchAll(newRegexp);
+            let result02Length = appoggio.toArray().length;
+            for (let m = 0; m < result02Length; m++) {
+                let provaSpan = document.createElement('span');
+                let appoj = result02.next();
+                provaSpan.innerHTML = appoj.value +" "+ appoj.value.index +" ";
+                document.getElementById("prove").appendChild(provaSpan);
+            }
+        }
+ 
+        console.log("RESULT1");    
+       
+        //prove con il toArray
+        console.log("\n---\n"); //se è finale viene trimmato
+        console.log(); //così viene ignorato
+        console.log("");
+        console.log("prove con il toArray()");
+        console.log("result1Prov");
+        let result1Prov = text.matchAll(regexp);
+        //lo consuma tutto
+        console.log(result1Prov.toArray()[0]);
+        //questo da undefined
+        console.log(result1Prov.toArray()[1]);
+        //array vuoto
+        console.log(result1Prov.toArray());
+ 
+        console.log("result1Prov2");
+        let result1Prov2 = text.matchAll(regexp);
+        console.log(result1Prov2.toArray());
+        //undefined again
+        console.log(result1Prov2.toArray()[0]);
+       
+        console.log("result1Prov3");
+        let result1Prov3 = text.matchAll(regexp);
+        let z = result1Prov3.toArray();
+        console.log(z[0]);
+        console.log(z[1]);
+ 
+        console.log("---\n---");
+ 
+        //simil matteo ma senza map
+        console.log("result1");
+        console.log("toArray - foreach"); console.log("è stampato nel secondo div");
+        let result1 = text.matchAll(regexp);
+        let result1Tot = "";  
+        result1.toArray().forEach(element1 => {
+            console.log(element1);
+            console.log(element1.index);
+            result1Tot += element1+ " "+element1.index+ " ";
+        });
+        document.getElementById("result1").innerHTML = result1Tot;
+ 
+        function toArrayForEach(newRegexp) {
+            let result1 = text.matchAll(newRegexp);
+            let result1Tot = "";  
+            result1.toArray().forEach(element1 => {
+                result1Tot += element1+ " "+element1.index+ " ";
+            });
+            if (result1Tot == "") {
+                result1Tot = "-1";
+            }
+            document.getElementById("result1").innerHTML = result1Tot;
+        }
+ 
+        console.log("result2");        
+        console.log("toArray - for normale"); console.log("è stampato nel terzo div");
+        let result2 = text.matchAll(regexp);
+        let result2Tot = "";
+        let b = result2.toArray();
+        for(let i = 0; i<b.length; i++) {
+            console.log(b[i]);
+            result2Tot += b[i]+ " "+b[i].index+ " ";
+        }
+        document.getElementById("result2").innerHTML = result2Tot;
+ 
+        function toArrayForNormale(newRegexp) {
+            let result2 = text.matchAll(newRegexp);
+            let result2Tot = "";
+            let b = result2.toArray();
+            for(let i = 0; i<b.length; i++) {
+                result2Tot += b[i]+ " "+b[i].index+ " ";
+            }
+            if (result2Tot == "") {
+                result2Tot = "-1";
+            }
+            document.getElementById("result2").innerHTML = result2Tot;
+        }
+ 
+        console.log("result3");
+        console.log("toArray - for of"); console.log("è stampato nel quarto div");
+        let result3 = text.matchAll(regexp);
+        let c = result3.toArray();
+        let result3Tot = "";
+        for (item3 of c) {
+            console.log(item3);
+            result3Tot += item3 +" "+ item3.index +" ";
+        }
+        document.getElementById("result3").innerHTML = result3Tot;
+ 
+        function toArrayForOf(newRegexp) {
+            let result3 = text.matchAll(newRegexp);
+            let c = result3.toArray();
+            let result3Tot = "";
+            for (item3 of c) {
+                result3Tot += item3 +" "+ item3.index +" ";
+            }
+            if (result3Tot == "") {
+                result3Tot = "-1";
+            }
+            document.getElementById("result3").innerHTML = result3Tot;
+        }
+ 
+        //CHECASINO
+        console.log("result4");
+        console.log("for in"); console.log("è stampato nel quinto div");
+        let result4 = text.matchAll(regexp);
+        let d = result4.next();
+        let result4Tot = "";
+        while (d.done != true) {  
+            console.log(d);        
+            for (item4 in d) {
+                if (item4 != "done") {
+                    console.log(item4+" = "+d[item4]);
+                    result4Tot += d[item4] +" "+ d[item4].index +" ";
+                } else {
+                    console.log(item4+" = "+d[item4]);
+                }
+            }
+            d = result4.next();
+        }
+        document.getElementById("result4").innerHTML = result4Tot;
+       
+        function toArrayForIn(newRegexp) {
+            let result4 = text.matchAll(newRegexp);
+            let d = result4.next();
+            let result4Tot = "";
+            while (d.done != true) {                          
+                for (item4 in d) {
+                    if (item4 != "done") {                        
+                        result4Tot += d[item4] +" "+ d[item4].index +" ";                        
+                    }
+                }
+                d = result4.next();
+            }
+            if (result4Tot == "") {
+                result4Tot = "-1";
+            }
+            document.getElementById("result4").innerHTML = result4Tot;
+        }
+ 
+       
+    </script>
+</body>
+</html>

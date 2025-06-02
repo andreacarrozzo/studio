@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+       
+    </style>
+</head>
+<body>
+    <h3>Modifiers</h3>
+    <div id="lorem"></div>    
+    <div>
+        <input id="0" type="button" value="TestInit (su altro testo)" onclick="testInit(text)">
+        <input id="1" type="button" value="ModifierD" onclick="modifierD(lorem)">
+        <input id="2" type="button" value="[ado]Match" onclick="parentesiQuadre(lorem)">
+        <input id="3" type="button" value="[ado]MatchAll" onclick="parentesiQuadreMatchAll(lorem)">
+        <input id="4" type="button" value="[a-d]MatchAll" onclick="intervalMatchAll(lorem)">
+        <input id="5" type="button" value="(ore|dolor)MatchAll" onclick="orMatchAll(lorem)">
+        <input id="6" type="button" value="(ore|dolor)MatchAllFindIntegrata" onclick="orMatchAllFindIntegrata(lorem,text)">
+        <input id="7" type="button" value="(ore|dolor)MatchAllFindParola" onclick="orMatchAllFindParola(lorem,text)">
+        <input id="8" type="button" value="[^ a-z]MatchAll" onclick="notMatchAll(lorem)">
+        <input id="9" type="button" value=" MatchAll" onclick="whitespaceMatchAll(lorem)">
+        <input id="10" type="button" value="startorfinishMatchAll" onclick="startorfinishMatchAll(lorem)">
+        <input id="11" type="button" value="id+MatchAll" onclick="plusMatchAll(lorem)">
+        <input id="12" type="button" value="altrotesto*MatchAll" onclick="timesMatchAll()">
+        <input id="13" type="button" value="altrotesto?MatchAll" onclick="interrugativedotMatchAll()">
+    </div>
+    <div>
+        <input id="num" type="number">
+        <input id="find" type="button" value="Trova indice" onclick="fintaFind(text)">
+    </div>
+    <div id="result"></div>
+    <script>
+       
+        let lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+ 
+        document.getElementById("lorem").innerHTML = lorem+"<br>"+lorem;
+ 
+        let text = document.getElementById("lorem").innerHTML;
+ 
+        console.log("lorem = "+lorem.length);
+        console.log("text = "+text.length);
+ 
+        function testInit(text) {
+            let pattern = 'lo';
+            let modifiers ='gid';
+            let regexp = new RegExp(pattern, modifiers);
+            console.log(regexp);
+            console.log(regexp instanceof RegExp);
+            let result = text.matchAll(regexp);
+            console.log(result);
+            let result2 = result.toArray();
+            console.log(result2);
+            document.getElementById("result").innerHTML = result2;
+        }
+       
+ 
+        // /d fa cacare
+        function modifierD(lorem) {
+            let resultProva = lorem.match(/(or)(em)/d);
+            console.log(resultProva);
+            document.getElementById("result").innerHTML = resultProva;
+        }
+       
+        function parentesiQuadre(lorem) {
+            let resultProva = lorem.match(/[ado]/g);
+            console.log(resultProva);    
+            document.getElementById("result").innerHTML = resultProva;
+        }
+       
+        function parentesiQuadreMatchAll(lorem) {
+            let resultProva = lorem.matchAll(/[ado]/g);
+            console.log(resultProva);
+            let resultProvaTot = "";
+            for (res of resultProva) {
+                console.log(res);
+                resultProvaTot += res+" "+res.index+"<br>";
+            }
+            console.log(resultProvaTot);
+            document.getElementById("result").innerHTML = resultProvaTot;
+        }
+ 
+        function intervalMatchAll(lorem) {
+            let resultProva = lorem.matchAll(/[a-d]/g);
+            console.log(resultProva);
+            let resultProvaTot = "";
+            for (res of resultProva) {
+                console.log(res);
+                resultProvaTot += res+" "+res.index+"<br>";
+            }
+            console.log(resultProvaTot);
+            document.getElementById("result").innerHTML = resultProvaTot;
+        }
+ 
+        //va in ordine alfabetico e non ricontrolla i termini già visti
+        //quando trova dolore vede dolor e poi riparte da e, quindi non trova ore
+        function orMatchAll(lorem) {
+            console.log(lorem.match(/(ore|dolor)/g));
+            let resultProva = lorem.matchAll(/(ore|dolor)/g);
+            console.log(resultProva);
+            let resultProvaTot = "";
+            for (res of resultProva) {
+                console.log(res);
+                resultProvaTot += res+" "+res.index+"<br>";
+            }
+            console.log(resultProvaTot);
+            document.getElementById("result").innerHTML = resultProvaTot;
+        }
+ 
+        function orMatchAllFindParola(lorem,text) {
+            let resultProva = lorem.matchAll(/(ore|dolor)/g);
+            let resultProvaTot = "";
+            let arrayIndex = [];
+            for (res of resultProva) {
+                arrayIndex.push([res.index, res[0].length]);
+                resultProvaTot += res+" "+res.index+"<br>";
+            }
+            document.getElementById("result").innerHTML = resultProvaTot;
+ 
+            let spanStart = "<span style='background-color:yellow'>";
+            let spanEnd = "</span>";
+           
+            console.log(arrayIndex);
+            for (let i =arrayIndex.length-1; i>=0;i--) {
+                let string = text.substring(arrayIndex[i][0], arrayIndex[i][0]+arrayIndex[i][1]);
+                console.log(string);
+                let textBefore = text.substring(0, arrayIndex[i][0]);
+                let textAfter = text.substring(arrayIndex[i][0]+string.length);
+                text = textBefore + spanStart + string + spanEnd + textAfter;
+            }
+            document.getElementById("lorem").innerHTML = text;
+        }
+ 
+        function orMatchAllFindIntegrata(lorem, text) {
+            let resultProva = lorem.matchAll(/(ore|dolor)/g);
+            let resultProvaTot = "";
+            let arrayIndex = [];
+            for (res of resultProva) {
+                arrayIndex.push(res.index);
+                resultProvaTot += res+" "+res.index+"<br>";
+            }
+            document.getElementById("result").innerHTML = resultProvaTot;
+ 
+            let spanStart = "<span style='background-color:yellow'>";
+            let spanEnd = "</span>";
+           
+            //console.log(arrayIndex);
+            for (let i =arrayIndex.length-1; i>=0;i--) {
+                let char = text[arrayIndex[i]];
+                //console.log(char);
+                let textBefore = text.substring(0, arrayIndex[i]);
+                let textAfter = text.substring(arrayIndex[i]+1);
+                text = textBefore + spanStart + char + spanEnd + textAfter;
+            }
+            document.getElementById("lorem").innerHTML = text;
+        }
+ 
+        function fintaFind(text) {
+            let ind = Number(document.getElementById("num").value);
+            //console.log(ind);
+            let char = text[ind];
+            //console.log(char);
+            let textBefore = text.substring(0, ind);
+            let textAfter = text.substring(ind+1);
+            //console.log(textBefore);
+            //console.log(textAfter);
+            let textFind = textBefore+"<span style='background-color:yellow'>"+char+"</span>"+textAfter;
+            document.getElementById("lorem").innerHTML = textFind;
+        }
+ 
+        function notMatchAll(lorem) {
+            //ho aggiunto lo spazio al not, altrimenti me li trovava tutti e veniva no schifo (ma funziona)
+            console.log(lorem.match(/[^ a-z]/g));
+            let resultProva = lorem.matchAll(/[^ a-z]/g);
+            console.log(resultProva);
+            let resultProvaTot = "";
+            for (res of resultProva) {
+                console.log(res);
+                resultProvaTot += res+" "+res.index+"<br>";
+            }
+            console.log(resultProvaTot);
+            document.getElementById("result").innerHTML = resultProvaTot;
+        }
+       
+        function whitespaceMatchAll(lorem) {
+            console.log(lorem.match(/ /g));
+            let resultProva = lorem.matchAll(/ /g);
+            console.log(resultProva);
+            let resultProvaTot = "";
+            for (res of resultProva) {
+                console.log(res);
+                resultProvaTot += "'"+res+"' "+res.index+"<br>";
+            }
+            console.log(resultProvaTot);
+            document.getElementById("result").innerHTML = resultProvaTot;
+        }
+ 
+ 
+        function startorfinishMatchAll(lorem) {
+            let popup = document.createElement("div");
+            popup.id = "popup";
+            let overlay = document.createElement("div");
+            overlay.id = "overlay";
+           
+            //popup.style.display = "none";
+            popup.style.position = "fixed";
+            popup.style.to = "30%";
+            popup.style.left = "50%";
+            popup.style.transform = "translate(-50%, -30%)";
+            popup.style.backgroundcolor = "white";
+            popup.style.border = "2px solid #333";
+            popup.style.padding = "20px";
+            popup.style.boxshadow = "0px 0px 10px rgba(0,0,0,0.5)";
+            popup.style.zindex = "1000";        
+            popup.style.display = 'block';
+ 
+            //overlay.display = "none";
+            overlay.position = "fixed";
+            overlay.top = "0; left: 0";
+            overlay.width = "100%; height: 100%";
+            overlay.background = "rgba(0, 0, 0, 0.5)";
+            overlay.zindex = "999";
+ 
+            document.body.appendChild(popup);
+            document.body.appendChild(overlay);
+            let button1popup = document.createElement("button");
+            button1popup.innerHTML = /\bdo/g;
+           
+            button1popup.onclick = () => {handleChoice(lorem, button1popup.innerHTML)};
+            popup.appendChild(button1popup);
+            let button2popup = document.createElement("button");
+            button2popup.innerHTML = /or\b/g;
+           
+            button2popup.onclick = () => {handleChoice(lorem, button2popup.innerHTML)};
+            popup.appendChild(button2popup);
+        }
+ 
+        function handleChoice(lorem, stringa) {  
+            document.getElementById('popup').remove();
+            document.getElementById('overlay').remove();          
+            let regexpArr = stringa.split("/");
+            console.log(regexpArr);
+            let pattern = regexpArr[1];
+            let modifiers = regexpArr[2];            
+            let regexp = new RegExp(pattern, modifiers);
+            console.log(regexp);
+            console.log(lorem.search(regexp));
+            let result = lorem.matchAll(regexp);                        
+            let resultTot = "";
+            for (res of result) {
+                console.log(res);
+                resultTot += "'"+res+"' "+res.index+"<br>";
+            }
+            console.log(resultTot);
+            document.getElementById("result").innerHTML = resultTot;            
+        }
+ 
+ 
+        function plusMatchAll(lorem) {
+            console.log(lorem.match(/l+/g));
+            let resultProva = lorem.matchAll(/(id)+/g);
+            console.log(resultProva);
+            let resultProvaTot = "";
+            for (res of resultProva) {
+                console.log(res);
+                resultProvaTot += "'"+res+"' "+res.index+"<br>";
+            }
+            console.log(resultProvaTot);
+            document.getElementById("result").innerHTML = resultProvaTot;
+        }
+       
+        function timesMatchAll() {
+            let string = "ciiaiaia ciaaiao ciiaciiaaa";
+            console.log(string.match(/ia*/g));
+            //parentesi tonde OP
+            let resultProva = string.matchAll(/(ci)(ia)*/g);
+            console.log(resultProva);
+            let resultProvaTot = "";
+            for (res of resultProva) {
+                console.log(res);
+                resultProvaTot += "'"+res+"' "+res.index+"<br>";
+            }
+            console.log(resultProvaTot);
+            document.getElementById("result").innerHTML = string +"<br>"+ resultProvaTot;
+        }
+ 
+        function interrugativedotMatchAll() {
+            let string = "ciiaiaia ciaaiao ciiaciiaaa";
+            console.log(string.match(/ia?/g));
+            //parentesi tonde OP
+            let resultProva = string.matchAll(/(ci)(ia)?/g);
+            console.log(resultProva);
+            let resultProvaTot = "";
+            for (res of resultProva) {
+                console.log(res);
+                resultProvaTot += "'"+res+"' "+res.index+"<br>";
+            }
+            console.log(resultProvaTot);
+            document.getElementById("result").innerHTML = string +"<br>"+ resultProvaTot;
+        }
+    </script>
+</body>
+</html>
